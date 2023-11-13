@@ -151,7 +151,7 @@ func PromMiddleWare(r *ghttp.Request) {
 		return
 	}
 
-	respSize := len(r.GetBody())
+	respSize := r.Response.BufferLength()
 	if respSize < 0 {
 		respSize = 0
 	}
