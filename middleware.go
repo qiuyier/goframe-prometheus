@@ -6,6 +6,7 @@ import (
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/os/gctx"
 	"github.com/gogf/gf/v2/os/grpool"
+	"github.com/gogf/gf/v2/util/gconv"
 	"github.com/prometheus/client_golang/prometheus"
 	"net/http"
 	"regexp"
@@ -151,7 +152,7 @@ func PromMiddleWare(r *ghttp.Request) {
 		return
 	}
 
-	respSize := r.Response.BufferLength()
+	respSize := gconv.Float64(r.Response.ResponseWriter.Header().Get("Content-Length"))
 	if respSize < 0 {
 		respSize = 0
 	}
@@ -159,5 +160,5 @@ func PromMiddleWare(r *ghttp.Request) {
 	reqCount.WithLabelValues(lvs...).Inc()
 	reqDuration.WithLabelValues(lvs...).Observe(time.Since(start).Seconds())
 	reqSizeBytes.WithLabelValues(lvs...).Observe(calcRequestSize(r.Request))
-	respSizeBytes.WithLabelValues(lvs...).Observe(float64(respSize))
+	respSizeBytes.WithLabelValues(lvs...).Observe(respSize)
 }
