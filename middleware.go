@@ -1,8 +1,11 @@
 package goframe_prometheus
 
 import (
+	"context"
 	"fmt"
 	"github.com/gogf/gf/v2/net/ghttp"
+	"github.com/gogf/gf/v2/os/gctx"
+	"github.com/gogf/gf/v2/os/grpool"
 	"github.com/prometheus/client_golang/prometheus"
 	"net/http"
 	"regexp"
@@ -64,6 +67,13 @@ type PromOpts struct {
 	ExcludeRegexEndpoint   string
 	ExcludeRegexMethod     string
 	EndpointLabelMappingFn RequestLabelMappingFn
+}
+
+func init() {
+	prometheus.MustRegister(upTime, reqCount, reqDuration, reqSizeBytes, respSizeBytes)
+	_ = grpool.AddWithRecover(gctx.New(), func(ctx context.Context) {
+		recordUptime()
+	}, nil)
 }
 
 func (po *PromOpts) checkLabel(label, pattern string) bool {
