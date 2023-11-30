@@ -152,7 +152,7 @@ func PromMiddleWare(r *ghttp.Request) {
 		return
 	}
 
-	respSize := gconv.Float64(r.Response.ResponseWriter.Header().Get("Content-Length"))
+	respSize := gconv.Float64(r.Response.BufferLength())
 	if respSize < 0 {
 		respSize = 0
 	}
