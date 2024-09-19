@@ -138,7 +138,7 @@ func PromMiddleWare(r *ghttp.Request) {
 	start := time.Now()
 	r.Middleware.Next()
 
-	status := fmt.Sprintf("%d", r.Response.Writer.Status)
+	status := fmt.Sprintf("%d", r.Response.Status)
 	endpoint := promOpts.EndpointLabelMappingFn(r)
 	method := r.Request.Method
 
